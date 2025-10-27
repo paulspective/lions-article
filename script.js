@@ -8,16 +8,28 @@ const allImages = document.querySelectorAll('img');
 const sections = document.querySelectorAll('section');
 
 document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('#sidebar ul li a');
+
+  if (navLinks.length > 0) {
+    navLinks[0].classList.add('active');
+  }
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
+      const id = entry.target.getAttribute('id');
+
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
+
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`#sidebar a[href="#${id}"]`);
+        if (activeLink) activeLink.classList.add('active');
       } else {
         entry.target.classList.remove('visible');
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.2 });
 
   sections.forEach(section => {
     observer.observe(section);
@@ -56,16 +68,15 @@ function closeModal() {
 openBtn.addEventListener('click', openSidebar);
 closeBtn.addEventListener('click', () => {
   closeSidebar();
-  closeModal();
 });
 
 overlay.addEventListener('click', closeSidebar);
 
 allImages.forEach(img => {
   img.addEventListener('click', () => {
-      modalImg.src = img.src;
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
+    modalImg.src = img.src;
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
   });
 });
 
